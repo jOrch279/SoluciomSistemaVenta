@@ -8,11 +8,23 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using SistemaVenta.DAL.DBContext;
+using Microsoft.Extensions.Options;
+/* using SistemaVenta.DAL.Implementacion;
+using SistemaVenta.DAL.Interfaces;
+using SistemaVenta.BLL.Interfaces;
+using SistemaVenta.BLL.Implementacion; */
 
 
 namespace SistemaVenta.IOC
 {
     public static class Dependecia
     {
+        public static void InyectarDependencia(this IServiceCollection services,IConfiguration Configuration )
+        {
+            services.AddDbContext<DBSISTEMA01Context>(options =>
+            {
+                options.UseSqlServer(Configuration.GetConnectionString("CadenaSQL"));
+            });
+        }
     }
 }
