@@ -13,29 +13,79 @@ namespace SistemaVenta.DAL.Implementacion
 {
     public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEntity : class
     {
-        public Task<IQueryable<TEntity>> Consultar(Expression<Func<TEntity, bool>> filtro = null)
+        private readonly DBSISTEMA01Context _dbContext;
+        public GenericRepository(DBSISTEMA01Context dbContext )
         {
-            throw new NotImplementedException();
+            _dbContext = dbContext;
         }
 
-        public Task<TEntity> Crear(TEntity entidad)
+        public async Task<TEntity> Obtener(Expression<Func<TEntity, bool>> filtro)
         {
-            throw new NotImplementedException();
+            try
+            {
+
+                TEntity entidad = await _dbContext.Set<TEntity>().FirstOrDefaultAsync(filtro);
+                return entidad;
+            }
+            catch
+            {
+
+                throw;
+            }
         }
 
-        public Task<bool> Editar(TEntity entidad)
+        public async Task<TEntity> Crear(TEntity entidad)
         {
-            throw new NotImplementedException();
+            try
+            {
+                _dbContext.Set<TEntity>().Add(entidad);
+                await _dbContext.SaveChangesAsync();
+                return entidad;
+            }
+            catch
+            {
+
+                throw;
+            }
         }
 
-        public Task<bool> Eliminar(TEntity entidad)
+        public async Task<bool> Editar(TEntity entidad)
         {
-            throw new NotImplementedException();
+            try
+            {
+                _dbContext.Update(entidad);
+                await _dbContext.SaveChangesAsync();
+                return true;
+            }
+            catch
+            {
+
+                throw;
+            }
         }
 
-        public Task<TEntity> Obtener(Expression<Func<TEntity, bool>> filtro)
+        public async Task<bool> Eliminar(TEntity entidad)
         {
-            throw new NotImplementedException();
+            try
+            {
+                _dbContext.Remove(entidad);
+                await _dbContext.SaveChangesAsync();
+                return true;
+            }
+            catch
+            {
+
+                throw;
+            }
         }
+        public async Task<IQueryable<TEntity>> Consultar(Expression<Func<TEntity, bool>> filtro = null)
+        {
+            IQueryable<TEntity>queryEntidad =filtro==null? _dbContext.Set<TEntity>():_dbContext.Set<TEntity>().Where(filtro);
+            return queryEntidad;
+        }
+
+        
+
+        
     }
 }
